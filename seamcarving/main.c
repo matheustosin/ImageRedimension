@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>        // Para usar strings
+#include <math.h>
 
 #ifdef WIN32
 #include <windows.h>    // Apenas para Windows
@@ -136,6 +137,28 @@ int main(int argc, char** argv)
     glutMainLoop();
 }
 
+void pixEnergy() {
+    float energy[pic[0].width][pic[0].height];
+    for ( int i = 1; i < pic[0].width; i++ ) {
+        //printf("i: %d \n", i);
+        for ( int j = 1; j < pic[0].height; j++ ) {
+            //printf("j: %d \n", j);
+            int rx = (pic[0].img[j * pic[0].width + i+1].r) - (pic[0].img[j * pic[0].width + i-1].r);
+            int gx = (pic[0].img[j * pic[0].width + i+1].g) - (pic[0].img[j * pic[0].width + i-1].g);
+            int bx = (pic[0].img[j * pic[0].width + i+1].b) - (pic[0].img[j * pic[0].width + i-1].b);
+            int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
+            printf("deltax: %d \n", deltaX);
+            int ry = (pic[0].img[i * pic[0].width+ j+1].r) - (pic[0].img[i * pic[0].width+ j-1].r);
+            int gy = (pic[0].img[i * pic[0].width + j+1].g) - (pic[0].img[i * pic[0].width+ j-1].g);
+            int by = (pic[0].img[i* pic[0].width+ j+1].b) - (pic[0].img[i * pic[0].width+ j-1].b);
+            int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
+            printf("deltay: %d \n", deltaY);
+            //energy[i][j] = deltaX + deltaY;
+        }
+
+    }
+}
+
 
 // Gerencia eventos de teclado
 void keyboard(unsigned char key, int x, int y)
@@ -151,6 +174,7 @@ void keyboard(unsigned char key, int x, int y)
         // 1-3: seleciona a imagem correspondente (origem, máscara e resultado)
         sel = key - '1';
     if(key == 's') {
+            pixEnergy();
         // Aplica o algoritmo e gera a saida em pic[2].img...
         // ...
         // ... (crie uma função para isso!)
