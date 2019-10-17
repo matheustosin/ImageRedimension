@@ -138,11 +138,11 @@ int main(int argc, char** argv)
 }
 
 void pixEnergy() {
-    int energy[pic[0].width][pic[0].height];
-    for ( int i = 1; i < pic[0].width; i++ ) {
-        //printf("i: %d \n", i);
-        for ( int j = 1; j < pic[0].height; j++ ) {
-            //printf("j: %d \n", j);
+    int energy[(pic[0].width)-2][(pic[0].height)-2];
+    for ( int i = 1; i < (pic[0].width) -2; i++ ) {
+        //printf("sizeW: %i \n",pic[0].width);
+        for ( int j = 1; j < (pic[0].height) -2; j++ ) {
+            //printf("sizeH: %i \n",pic[0].height);
             int rx = (pic[0].img[j * pic[0].width + i+1].r) - (pic[0].img[j * pic[0].width + i-1].r);
             int gx = (pic[0].img[j * pic[0].width + i+1].g) - (pic[0].img[j * pic[0].width + i-1].g);
             int bx = (pic[0].img[j * pic[0].width + i+1].b) - (pic[0].img[j * pic[0].width + i-1].b);
@@ -156,19 +156,13 @@ void pixEnergy() {
             energy[i][j] = deltaX + deltaY;
         }
     }
-    for(int a = 0; a < pic[0].width; a++) {
-            printf("linha: %i, valor: %i \n",a, energy[a][0]);
+
+    for(int l = 0; l <= (pic[0].width)-2; l++) {
+        for( int c = 0; c <= (pic[0].height)-2; c++) {
+            printf( "linha: %i, coluna: %i, valor: %i \n", l, c, energy[l][c] );
+        }
+
     }
-
-
-
-//    for(int a = 0; a < pic[0].width; a++) {
-//        for(int b = 0; b < pic[0].height; b++) {
-
-//
-//        }
-//
-//    }
 }
 
 
@@ -193,7 +187,7 @@ void keyboard(unsigned char key, int x, int y)
 
         // Exemplo: pintando tudo de amarelo
         for(int i=0; i<pic[2].height*pic[2].width; i++)
-            pic[2].img[i].r = pic[2].img[i].g = 255;
+            pic[2].img[i].r = pic[2].img[i].g = 98;
 
         // Chame uploadTexture a cada vez que mudar
         // a imagem (pic[2])
