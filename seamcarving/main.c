@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 }
 
 void pixEnergy() {
-    float energy[pic[0].width][pic[0].height];
+    int energy[pic[0].width][pic[0].height];
     for ( int i = 1; i < pic[0].width; i++ ) {
         //printf("i: %d \n", i);
         for ( int j = 1; j < pic[0].height; j++ ) {
@@ -147,16 +147,28 @@ void pixEnergy() {
             int gx = (pic[0].img[j * pic[0].width + i+1].g) - (pic[0].img[j * pic[0].width + i-1].g);
             int bx = (pic[0].img[j * pic[0].width + i+1].b) - (pic[0].img[j * pic[0].width + i-1].b);
             int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
-            printf("deltax: %d \n", deltaX);
-            int ry = (pic[0].img[i * pic[0].width+ j+1].r) - (pic[0].img[i * pic[0].width+ j-1].r);
-            int gy = (pic[0].img[i * pic[0].width + j+1].g) - (pic[0].img[i * pic[0].width+ j-1].g);
-            int by = (pic[0].img[i* pic[0].width+ j+1].b) - (pic[0].img[i * pic[0].width+ j-1].b);
+            //printf("deltax: %d \n", deltaX);
+            int ry = (pic[0].img[(j+1) * pic[0].width + i].r) - (pic[0].img[(j-1) * pic[0].width + i].r);
+            int gy = (pic[0].img[(j+1) * pic[0].width + i].g) - (pic[0].img[(j-1) * pic[0].width + i].g);
+            int by = (pic[0].img[(j+1) * pic[0].width + i].b) - (pic[0].img[(j-1) * pic[0].width + i].b);
             int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
-            printf("deltay: %d \n", deltaY);
-            //energy[i][j] = deltaX + deltaY;
+            //printf("deltay: %d \n", deltaY);
+            energy[i][j] = deltaX + deltaY;
         }
-
     }
+    for(int a = 0; a < pic[0].width; a++) {
+            printf("linha: %i, valor: %i \n",a, energy[a][0]);
+    }
+
+
+
+//    for(int a = 0; a < pic[0].width; a++) {
+//        for(int b = 0; b < pic[0].height; b++) {
+
+//
+//        }
+//
+//    }
 }
 
 
