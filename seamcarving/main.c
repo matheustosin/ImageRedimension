@@ -138,31 +138,33 @@ int main(int argc, char** argv)
 }
 
 void pixEnergy() {
-    int energy[(pic[0].width)-2][(pic[0].height)-2];
+    int energy[pic[0].width -2 ][pic[0].height -2 ];
     for ( int i = 1; i < (pic[0].width) -2; i++ ) {
         //printf("sizeW: %i \n",pic[0].width);
         for ( int j = 1; j < (pic[0].height) -2; j++ ) {
             //printf("sizeH: %i \n",pic[0].height);
-            int rx = (pic[0].img[j * pic[0].width + i+1].r) - (pic[0].img[j * pic[0].width + i-1].r);
-            int gx = (pic[0].img[j * pic[0].width + i+1].g) - (pic[0].img[j * pic[0].width + i-1].g);
-            int bx = (pic[0].img[j * pic[0].width + i+1].b) - (pic[0].img[j * pic[0].width + i-1].b);
+            int rx = (pic[0].img[j * (pic[0].width -1) + i+1].r) - (pic[0].img[j * (pic[0].width -1) + i-1].r);
+            int gx = (pic[0].img[j * (pic[0].width -1) + i+1].g) - (pic[0].img[j * (pic[0].width -1) + i-1].g);
+            int bx = (pic[0].img[j * (pic[0].width -1) + i+1].b) - (pic[0].img[j * (pic[0].width -1) + i-1].b);
             int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
             //printf("deltax: %d \n", deltaX);
-            int ry = (pic[0].img[(j+1) * pic[0].width + i].r) - (pic[0].img[(j-1) * pic[0].width + i].r);
-            int gy = (pic[0].img[(j+1) * pic[0].width + i].g) - (pic[0].img[(j-1) * pic[0].width + i].g);
-            int by = (pic[0].img[(j+1) * pic[0].width + i].b) - (pic[0].img[(j-1) * pic[0].width + i].b);
+            int ry = (pic[0].img[(j+1) * (pic[0].width -1) + i].r) - (pic[0].img[(j-1) * (pic[0].width -1) + i].r);
+            int gy = (pic[0].img[(j+1) * (pic[0].width -1) + i].g) - (pic[0].img[(j-1) * (pic[0].width -1) + i].g);
+            int by = (pic[0].img[(j+1) * (pic[0].width -1) + i].b) - (pic[0].img[(j-1) * (pic[0].width -1) + i].b);
             int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
             //printf("deltay: %d \n", deltaY);
-            energy[i][j] = deltaX + deltaY;
+            energy[i-1][j-1] = deltaX + deltaY;
         }
     }
 
-    for(int l = 0; l <= (pic[0].width)-2; l++) {
-        for( int c = 0; c <= (pic[0].height)-2; c++) {
-            printf( "linha: %i, coluna: %i, valor: %i \n", l, c, energy[l][c] );
-        }
 
-    }
+
+//    for(int l = 0; l <= (pic[0].width); l++) {
+//        for( int c = 0; c <= (pic[0].height); c++) {
+//            printf( "linha: %i, coluna: %i, valor: %i\n", l, c, energy[l][c] );
+//        }
+//
+//    }
 }
 
 
