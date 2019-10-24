@@ -158,7 +158,6 @@ boolean isBorda(int i, int j, int width, int height) {
 void pixEnergy() {
     int width = pic[0].width;
     int height = pic[0].height;
-    printf("sizeH: %i \n",height);
     int energy[width][height];
     for ( int i = 0; i < width; i++ ) {
         //printf("sizeW: %i \n",pic[0].width);
@@ -184,15 +183,51 @@ void pixEnergy() {
         }
     }
 
+    //matriz de somas
+    int matrizSoma[width][height];
+//    for( int a = 0; a < width; a++ ) {
+//        for( int b = 0; b < height; b++ ) {
+//            matrizSoma[a][b] = energy[a][b];
+//            printf("linha: %i, coluna: %i, valor: %i\n", a, b, matrizSoma[a][b]);
+//        }
+//    }
 
+    for( int a = 0; a < width; a++ ) {
+        for( int b = 0; b < height; b++ ) {
+            if (a == 0) {
+                matrizSoma[a][b] = energy[a][b];
+            }
+            if (b == 0) {
 
-    for(int l = 0; l < width; l++) {
-        for( int c = 0; c < height; c++) {
-            printf( "linha: %i, coluna: %i, valor: %i\n", l, c, energy[l][c] );
+                int vlrAtual = matrizSoma[a][b];
+                vlrAtual += matrizSoma[a-1][b];
+                if( (matrizSoma[a][b] + matrizSoma[a-1][b+1]) < vlrAtual ) {
+                    vlrAtual = matrizSoma[a][b] + matrizSoma[a-1][b+1];
+                    matrizSoma[a][b] = vlrAtual;
+                }
+                else {
+                    matrizSoma[a][b] = vlrAtual;
+                }
+
+            }
+            if (a == width) {
+                int aux = matrizSoma[a][b];
+                aux += matrizSoma[a-1][b];
+                if( (matrizSoma[a][b] + matrizSoma[a-1][b-1]) < aux ) {
+                    aux = matrizSoma[a][b] + matrizSoma[a-1][b-1];
+                    matrizSoma[a][b] = aux;
+                }
+                else {
+                    matrizSoma[a][b] = aux;
+                }
+            }
         }
-
     }
+
+
 }
+
+
 
 
 // Gerencia eventos de teclado
