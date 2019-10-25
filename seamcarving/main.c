@@ -154,7 +154,7 @@ boolean isBorda(int i, int j, int width, int height) {
         return 0;
     }
 }
-
+// código trabalho
 void pixEnergy() {
     int width = pic[0].width;
     int height = pic[0].height;
@@ -181,9 +181,18 @@ void pixEnergy() {
             }
 
         }
-    }
 
-    //matriz de somas
+        }
+
+        // debuger para print da energia de cada pixel
+        for( int l = 0; l < width; l++ ) {
+            for( int c = 0; c < height; c++) {
+                printf("linha: %i, col: %i, valor: %i\n", l, c, energy[l][c]);
+            }
+        }
+
+
+    // matriz de somas
     int matrizSoma[width][height];
 //    for( int a = 0; a < width; a++ ) {
 //        for( int b = 0; b < height; b++ ) {
@@ -225,6 +234,7 @@ void pixEnergy() {
     }
 
 
+
 }
 
 
@@ -244,7 +254,7 @@ void keyboard(unsigned char key, int x, int y)
         // 1-3: seleciona a imagem correspondente (origem, máscara e resultado)
         sel = key - '1';
     if(key == 's') {
-            pixEnergy();
+        pixEnergy();
         // Aplica o algoritmo e gera a saida em pic[2].img...
         // ...
         // ... (crie uma função para isso!)
