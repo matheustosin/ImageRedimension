@@ -159,79 +159,118 @@ void pixEnergy() {
     int width = pic[0].width;
     int height = pic[0].height;
     int energy[width][height];
-    for ( int i = 0; i < width; i++ ) {
+
+    boolean ctrl = 1;
+    boolean ctrl2 = 1;
+
+    printf("width: %i \n", width);
+    printf("height: %i \n", height);
+    if ( ctrl == 1) {
+        for ( int i = 0; i < width; i++ ) {
         //printf("sizeW: %i \n",pic[0].width);
-        for ( int j = 0; j < height; j++ ) {
+            for ( int j = 0; j < height; j++ ) {
 
-            if(isBorda(i, j, width, height) ) {
-                energy[i][j] = 100000;
-            }
-            else {
-                int rx = (pic[0].img[j * (width) + i+1].r) - (pic[0].img[j * (width) + i-1].r);
-                int gx = (pic[0].img[j * (width) + i+1].g) - (pic[0].img[j * (width) + i-1].g);
-                int bx = (pic[0].img[j * (width) + i+1].b) - (pic[0].img[j * (width) + i-1].b);
-                int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
-                //printf("deltax: %d \n", deltaX);
-                int ry = (pic[0].img[(j+1) * (width) + i].r) - (pic[0].img[(j-1) * (width) + i].r);
-                int gy = (pic[0].img[(j+1) * (width) + i].g) - (pic[0].img[(j-1) * (width) + i].g);
-                int by = (pic[0].img[(j+1) * (width) + i].b) - (pic[0].img[(j-1) * (width) + i].b);
-                int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
-                //printf("deltay: %d \n", deltaY);
-                energy[i][j] = deltaX + deltaY;
+                if(isBorda(i, j, width, height) ) {
+                    energy[i][j] = 100000;
+                }
+                else {
+                    int rx = (pic[0].img[j * (width) + i+1].r) - (pic[0].img[j * (width) + i-1].r);
+                    int gx = (pic[0].img[j * (width) + i+1].g) - (pic[0].img[j * (width) + i-1].g);
+                    int bx = (pic[0].img[j * (width) + i+1].b) - (pic[0].img[j * (width) + i-1].b);
+                    int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
+                    //printf("deltax: %d \n", deltaX);
+                    int ry = (pic[0].img[(j+1) * (width) + i].r) - (pic[0].img[(j-1) * (width) + i].r);
+                    int gy = (pic[0].img[(j+1) * (width) + i].g) - (pic[0].img[(j-1) * (width) + i].g);
+                    int by = (pic[0].img[(j+1) * (width) + i].b) - (pic[0].img[(j-1) * (width) + i].b);
+                    int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
+                    //printf("deltay: %d \n", deltaY);
+                    energy[i][j] = deltaX + deltaY;
+                }
+
             }
 
         }
+        ctrl = 0;
+    }
 
-        }
 
         // debuger para print da energia de cada pixel
-        for( int l = 0; l < width; l++ ) {
-            for( int c = 0; c < height; c++) {
-                printf("linha: %i, col: %i, valor: %i\n", l, c, energy[l][c]);
-            }
-        }
+//        for( int l = 0; l < width; l++ ) {
+//            for( int c = 0; c < height; c++) {
+//                printf("linha: %i, col: %i, valor: %i\n", l, c, matrizSoma[l][c]);
+//            }
+//        }
 
 
     // matriz de somas
     int matrizSoma[width][height];
-//    for( int a = 0; a < width; a++ ) {
-//        for( int b = 0; b < height; b++ ) {
-//            matrizSoma[a][b] = energy[a][b];
-//            printf("linha: %i, coluna: %i, valor: %i\n", a, b, matrizSoma[a][b]);
-//        }
-//    }
-
     for( int a = 0; a < width; a++ ) {
         for( int b = 0; b < height; b++ ) {
-            if (a == 0) {
-                matrizSoma[a][b] = energy[a][b];
-            }
-            if (b == 0) {
-
-                int vlrAtual = matrizSoma[a][b];
-                vlrAtual += matrizSoma[a-1][b];
-                if( (matrizSoma[a][b] + matrizSoma[a-1][b+1]) < vlrAtual ) {
-                    vlrAtual = matrizSoma[a][b] + matrizSoma[a-1][b+1];
-                    matrizSoma[a][b] = vlrAtual;
-                }
-                else {
-                    matrizSoma[a][b] = vlrAtual;
-                }
-
-            }
-            if (a == width) {
-                int aux = matrizSoma[a][b];
-                aux += matrizSoma[a-1][b];
-                if( (matrizSoma[a][b] + matrizSoma[a-1][b-1]) < aux ) {
-                    aux = matrizSoma[a][b] + matrizSoma[a-1][b-1];
-                    matrizSoma[a][b] = aux;
-                }
-                else {
-                    matrizSoma[a][b] = aux;
-                }
-            }
+            matrizSoma[a][b] = energy[a][b];
+//            printf("linha: %i, coluna: %i, valor: %i\n", a, b, matrizSoma[a][b]);
         }
     }
+    if(ctrl2 == 1) {
+        for( int a = 0; a < width; a++ ) {
+            for( int b = 0; b < height; b++ ) {
+
+                if (a == 0) {
+                    matrizSoma[a][b] = energy[a][b];
+                }
+                else {
+                    if (b == 0) {
+
+                        int vlrAtual = matrizSoma[a][b];
+                        vlrAtual += matrizSoma[a-1][b];
+                        if( (matrizSoma[a][b] + matrizSoma[a-1][b+1]) < vlrAtual ) {
+                            vlrAtual = matrizSoma[a][b] + matrizSoma[a-1][b+1];
+                            matrizSoma[a][b] = vlrAtual;
+                        }
+                        else {
+                            matrizSoma[a][b] = vlrAtual;
+                        }
+
+                    }
+                    else {
+                        if (b == height-1) {
+                            int aux = matrizSoma[a][b];
+                            aux += matrizSoma[a-1][b];
+                            if( (matrizSoma[a][b] + matrizSoma[a-1][b-1]) < aux ) {
+                                aux = matrizSoma[a][b] + matrizSoma[a-1][b-1];
+                                matrizSoma[a][b] = aux;
+                            }
+                            else {
+                                matrizSoma[a][b] = aux;
+                            }
+                        }
+                        else {
+                            int aux1 = matrizSoma[a][b];
+                            aux1 += matrizSoma[a-1][b-1];
+                            if( matrizSoma[a][b] + matrizSoma[a-1][b] < aux1 ) {
+                                aux1 = matrizSoma[a][b] + matrizSoma[a-1][b];
+                            }
+                            if( matrizSoma[a][b] + matrizSoma[a-1][b+1] < aux1 ) {
+                                aux1 = matrizSoma[a][b] + matrizSoma[a-1][b+1];
+                            }
+                            matrizSoma[a][b] = aux1;
+                        }
+                    }
+
+                }
+
+
+            }
+        }
+        ctrl2 = 0;
+    }
+    //imprime matriz de somas
+    for( int l = 0; l < width; l++ ) {
+            for( int c = 0; c < height; c++) {
+                printf("linha: %i, col: %i, valor: %i\n", l, c, matrizSoma[l][c]);
+            }
+        }
+
+
 
 
 
