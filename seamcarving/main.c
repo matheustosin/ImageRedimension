@@ -42,6 +42,7 @@ void keyboard(unsigned char key, int x, int y);
 
 // Largura e altura da janela
 int width, height;
+boolean ctrl = 1;
 
 // Identificadores de textura
 GLuint tex[3];
@@ -144,158 +145,197 @@ boolean isBorda(int i, int j, int width, int height) {
     if(j == 0) {
         return 1;
     }
-    if(i == width) {
+
+    if(i == height-1) {
         return 1;
     }
-    if(j == (height -1)) {
+
+    if(j == width-1) {
         return 1;
     }
     else {
         return 0;
     }
+
+
+
+
+
 }
+
+
+
 // código trabalho
 void pixEnergy() {
-    int width = pic[0].width;
-    int height = pic[0].height;
-    int energy[width][height];
-
-    boolean ctrl = 1;
-    boolean ctrl2 = 1;
-
-    printf("width: %i \n", width);
-    printf("height: %i \n", height);
+//    int width = pic[0].width;
+//    int height = pic[0].height;
+for(int i=0; i<pic[2].height*pic[2].width; i++) {
+            pic[2].img[i] = pic[0].img[i];
+        }
+    int energy[height][width];
+//    printf("width: %i \n", width);
+//    printf("height: %i \n", height);
     if ( ctrl == 1) {
-        for ( int i = 0; i < width; i++ ) {
+
+            printf("APARECE SÓ UMA VEZ\n");
+        for ( int i = 0; i < height; i++ ) {
         //printf("sizeW: %i \n",pic[0].width);
-            for ( int j = 0; j < height; j++ ) {
+            for ( int j = 0; j < width; j++ ) {
 
-                if(isBorda(i, j, width, height) ) {
-                    energy[i][j] = 100000;
+                if(isBorda(i, j, width, height)) {
+                    energy[i][j] = 500000;
                 }
                 else {
-                    int rx = (pic[0].img[j * (width) + i+1].r) - (pic[0].img[j * (width) + i-1].r);
-                    int gx = (pic[0].img[j * (width) + i+1].g) - (pic[0].img[j * (width) + i-1].g);
-                    int bx = (pic[0].img[j * (width) + i+1].b) - (pic[0].img[j * (width) + i-1].b);
-                    int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
-                    //printf("deltax: %d \n", deltaX);
-                    int ry = (pic[0].img[(j+1) * (width) + i].r) - (pic[0].img[(j-1) * (width) + i].r);
-                    int gy = (pic[0].img[(j+1) * (width) + i].g) - (pic[0].img[(j-1) * (width) + i].g);
-                    int by = (pic[0].img[(j+1) * (width) + i].b) - (pic[0].img[(j-1) * (width) + i].b);
-                    int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
-                    //printf("deltay: %d \n", deltaY);
-                    energy[i][j] = deltaX + deltaY;
-                }
-
-            }
-
-        }
-        ctrl = 0;
-    }
-
-
-        // debuger para print da energia de cada pixel
-//        for( int l = 0; l < width; l++ ) {
-//            for( int c = 0; c < height; c++) {
-//                printf("linha: %i, col: %i, valor: %i\n", l, c, energy[l][c]);
-//            }
-//        }
-
-
-    // matriz de somas
-    int matrizSoma[width][height];
-    for( int a = 0; a < width; a++ ) {
-        for( int b = 0; b < height; b++ ) {
-            matrizSoma[a][b] = energy[a][b];
-//            printf("linha: %i, coluna: %i, valor: %i\n", a, b, matrizSoma[a][b]);
-        }
-    }
-    if(ctrl2 == 1) {
-        for( int a = 0; a < width; a++ ) {
-            for( int b = 0; b < height; b++ ) {
-
-                if (a == 0) {
-                    matrizSoma[a][b] = energy[a][b];
-                }
-                else {
-                    if (b == 0) {
-
-                        int vlrAtual = matrizSoma[a][b];
-                        vlrAtual += matrizSoma[a-1][b];
-                        if( (matrizSoma[a][b] + matrizSoma[a-1][b+1]) < vlrAtual ) {
-                            vlrAtual = matrizSoma[a][b] + matrizSoma[a-1][b+1];
-                            matrizSoma[a][b] = vlrAtual;
-                        }
-                        else {
-                            matrizSoma[a][b] = vlrAtual;
-                        }
-
+                    if(pic[1].img[i * (width) + j].r == 254 && pic[1].img[i * (width) + j].g == 0 && pic[1].img[i * (width) + j].b == 0) {
+                        energy[i][j] = -500000;
                     }
                     else {
-                        if (b == height-1) {
-                            int aux = matrizSoma[a][b];
-                            aux += matrizSoma[a-1][b];
-                            if( (matrizSoma[a][b] + matrizSoma[a-1][b-1]) < aux ) {
-                                aux = matrizSoma[a][b] + matrizSoma[a-1][b-1];
-                                matrizSoma[a][b] = aux;
-                            }
-                            else {
-                                matrizSoma[a][b] = aux;
-                            }
-                        }
-                        else {
-                            int aux1 = matrizSoma[a][b];
-                            aux1 += matrizSoma[a-1][b-1];
-                            if( matrizSoma[a][b] + matrizSoma[a-1][b] < aux1 ) {
-                                aux1 = matrizSoma[a][b] + matrizSoma[a-1][b];
-                            }
-                            if( matrizSoma[a][b] + matrizSoma[a-1][b+1] < aux1 ) {
-                                aux1 = matrizSoma[a][b] + matrizSoma[a-1][b+1];
-                            }
-                            matrizSoma[a][b] = aux1;
-                        }
+                        int rx = (pic[2].img[i * (width) + j+1].r) - (pic[2].img[i * (width) + j-1].r);
+                        int gx = (pic[2].img[i * (width) + j+1].g) - (pic[2].img[i * (width) + j-1].g);
+                        int bx = (pic[2].img[i * (width) + j+1].b) - (pic[2].img[i * (width) + j-1].b);
+                        int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
+                        //printf("deltax: %d \n", deltaX);
+                        int ry = (pic[2].img[(i+1) * (width) + j].r) - (pic[2].img[(i-1) * (width) + j].r);
+                        int gy = (pic[2].img[(i+1) * (width) + j].g) - (pic[2].img[(i-1) * (width) + j].g);
+                        int by = (pic[2].img[(i+1) * (width) + j].b) - (pic[2].img[(i-1) * (width) + j].b);
+                        int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
+                    //printf("deltay: %d \n", deltaY);
+                    energy[i][j] = deltaX + deltaY;
                     }
 
                 }
-
-
             }
         }
-        ctrl2 = 0;
     }
-//    imprime matriz de somas
-//    for( int l = 0; l < width; l++ ) {
-//            for( int c = 0; c < height; c++) {
-//                printf("linha: %i, col: %i, valor: %i\n", l, c, matrizSoma[l][c]);
+    ctrl = 0;
+
+//         debuger para print da energia de cada pixel
+//        for( int i = 0; i < height; i++ ) {
+//            for( int j = 0; j < width; j++) {
+//                matrizSoma[i][j] = energy[i][j];
+//                printf("linha: %i, coluna: %i, valor: %i\n", i, j, energy[i][j]);
 //            }
 //        }
 
-//    for( int c = 0; c < height; c++) {
-//        printf("linha: %i, col: %i, valor: %i\n", width, c, matrizSoma[width][c]);
-//    }
-    int positions[width];
+    int matrizSoma[height][width];
+//    // matriz de somas
 
-    for(int m = width; m >= 0; m--) {
-        int menor = matrizSoma[m][0];
-        for(int n = 0; n < height; n++) {
-            if( matrizSoma[m][n] < menor ) {
-                menor = matrizSoma[m][n];
+    for( int i = 0; i < height; i++ ) {
+        for( int j = 0; j < width; j++ ) {
+            //matrizSoma[i][j] = energy[i][j];
+            if (i == 0) {
+                matrizSoma[i][j] = energy[i][j];
             }
-        }
+            else {
+                if (j == 0) {
 
-        positions[m] = menor;
+                    int vlrAtual = energy[i][j];
+                    vlrAtual += matrizSoma[i-1][j];
+                    if( (energy[i][j] + matrizSoma[i-1][j+1]) < vlrAtual ) {
+                        vlrAtual = energy[i][j] + matrizSoma[i-1][j+1];
+                        matrizSoma[i][j] = vlrAtual;
+                    }
+                    else {
+                        matrizSoma[i][j] = vlrAtual;
+                    }
+
+                }
+                else {
+                    if (j == width-1) {
+                        int aux = energy[i][j];
+                        aux += matrizSoma[i-1][j];
+                        if( (energy[i][j] + matrizSoma[i-1][j-1]) < aux ) {
+                            aux = energy[i][j] + matrizSoma[i-1][j-1];
+                            matrizSoma[i][j] = aux;
+                        }
+                        else {
+                            matrizSoma[i][j] = aux;
+                        }
+                    }
+                    else {
+                        int aux1 = energy[i][j];
+                        aux1 += matrizSoma[i-1][j-1];
+                        if( energy[i][j] + matrizSoma[i-1][j] < aux1 ) {
+                            aux1 = energy[i][j] + matrizSoma[i-1][j];
+                        }
+                        if( energy[i][j] + matrizSoma[i-1][j+1] < aux1 ) {
+                            aux1 = energy[i][j] + matrizSoma[i-1][j+1];
+                        }
+                        matrizSoma[i][j] = aux1;
+                    }
+                }
+
+            }
+
+
+        }
     }
-//    for(int teste = 0; teste < width; teste++) {
-//        printf("posicao: %i menor: %i\n",teste, positions[teste]);
+
+//    imprime matriz de somas
+//    for( int i = 0; i < height; i++ ) {
+//        int i = height-1;
+//        for( int j = 0; j < width; j++) {
+//            printf("%i\n", matrizSoma[i][j]);
+//        }
 //    }
 
+    int positions[height];
+    int i = height-1;
+    int j = 0;
+    int count = height-1;
 
+    int menor = matrizSoma[height-1][0];
+    for(int n = 0; n < width; n++) {
+        if( matrizSoma[height-1][n] < menor ) {
+            menor = matrizSoma[height-1][n];
+            j = n;
+        }
+    }
+    positions[i] = j;
+    count--;
+    i--;
+    while( count >= 0 ) {
+    //23 printf("count1: %i\n", i);
+        int a = matrizSoma[i-1][j-1];
+        int b = matrizSoma[i-1][j];
+        int c = matrizSoma[i-1][j+1];
+        //printf("%s", "aqui");
+        if(a <= b &&  a <= c) {
+            j = j-1;
+            positions[i] = j;
+            //printf("count1: %i\n", i);
+            //printf("iA: %i\n", i);
+        }
+        else if(b <= a &&  b <= c) {
+            j = j;
+            positions[i] = j;
+            //printf("count2: %i\n", i);
+            //printf("iB: %i\n", i);
+        }
+        else if(c <= a && c <= b) {
+            j = j+1;
+            positions[i] = j;
+            //printf("count3: %i\n", i);
+            //printf("iC: %i\n", i);
+        }
+        i = i-1;
+        count--;
+    }
 
+//    for(int i = 0; i < height; i++) {
+//        printf("%i\n", positions[i]);
+//    }
 
+    for(int i = 0; i < height; i++) {
+        for(int j = positions[i]; j < width; j++) {
+            //printf("linha: %i   AQUI: %i\n",i, j);
+            //pic[2].img[i * (width) + j].r = pic[2].img[i * (width) + (j + 1)].r = 255;
+            pic[2].img[i * (width) + j] = pic[2].img[i * (width) + (j + 1)];
+            //pic[2].img[i * (width) + (width-1)-i].r = pic[2].img[i].r = 255;
+        }
+    }
+    //width--;
 }
-
-
-
 
 // Gerencia eventos de teclado
 void keyboard(unsigned char key, int x, int y)
@@ -310,15 +350,17 @@ void keyboard(unsigned char key, int x, int y)
     if(key >= '1' && key <= '3')
         // 1-3: seleciona a imagem correspondente (origem, máscara e resultado)
         sel = key - '1';
-    if(key == 's') {
-        pixEnergy();
-        // Aplica o algoritmo e gera a saida em pic[2].img...
-        // ...
-        // ... (crie uma função para isso!)
+    if(key == 'm') {
+        for(int i = 0; i < 200; i++) {
+            pixEnergy();
+        }
+
+
+
 
         // Exemplo: pintando tudo de amarelo
-        for(int i=0; i<pic[2].height*pic[2].width; i++)
-            pic[2].img[i].r = pic[2].img[i].g = 98;
+//        for(int i=0; i<pic[2].height*pic[2].width; i++)
+//            pic[2].img[i].r = pic[2].img[i].g = 98;
 
         // Chame uploadTexture a cada vez que mudar
         // a imagem (pic[2])
