@@ -11,7 +11,7 @@
 				<Option object_output="./" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="elephant.jpg elephantmask.jpg" />
+				<Option parameters="bird.jpg birdmask.jpg" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="include" />

@@ -43,6 +43,7 @@ void keyboard(unsigned char key, int x, int y);
 // Largura e altura da janela
 int width, height;
 boolean ctrl = 1;
+int width2;
 
 // Identificadores de textura
 GLuint tex[3];
@@ -96,10 +97,11 @@ int main(int argc, char** argv)
     width = pic[0].width;
     height = pic[0].height;
 
+
     // A largura e altura da imagem de saída são iguais às da imagem original (1)
     pic[2].width  = pic[1].width;
     pic[2].height = pic[1].height;
-
+    width2 = pic[2].width;
     // Especifica o tamanho inicial em pixels da janela GLUT
     glutInitWindowSize(width, height);
 
@@ -156,48 +158,43 @@ boolean isBorda(int i, int j, int width, int height) {
     else {
         return 0;
     }
-
-
-
-
-
 }
 
 
-
+int energy[512][384];
 // código trabalho
 void pixEnergy() {
 //    int width = pic[0].width;
 //    int height = pic[0].height;
-for(int i=0; i<pic[2].height*pic[2].width; i++) {
-            pic[2].img[i] = pic[0].img[i];
-        }
-    int energy[height][width];
+
+//    int energy[height][width2];
 //    printf("width: %i \n", width);
 //    printf("height: %i \n", height);
     if ( ctrl == 1) {
-
-            printf("APARECE SÓ UMA VEZ\n");
+        for(int i=0; i<pic[2].height*pic[2].width; i++) {
+            pic[2].img[i] = pic[0].img[i];
+        }
+        printf("APARECE SÓ UMA VEZ\n");
         for ( int i = 0; i < height; i++ ) {
         //printf("sizeW: %i \n",pic[0].width);
-            for ( int j = 0; j < width; j++ ) {
-
-                if(isBorda(i, j, width, height)) {
+            for ( int j = 0; j < width2; j++ ) {
+// || (pic[1].img[i * (width) + j].r == 0 && pic[1].img[i * (width) + j].g == 255 && pic[1].img[i * (width) + j].b == 1))
+                if( ( isBorda(i, j, width2, height) ) || (pic[1].img[i * (width) + j].r == 0 && pic[1].img[i * (width) + j].g == 255 && pic[1].img[i * (width) + j].b == 1) ) {
                     energy[i][j] = 500000;
                 }
                 else {
-                    if(pic[1].img[i * (width) + j].r == 254 && pic[1].img[i * (width) + j].g == 0 && pic[1].img[i * (width) + j].b == 0) {
+                    if(pic[1].img[i * (width2) + j].r > 250 && pic[1].img[i * (width2) + j].g == 0 && pic[1].img[i * (width2) + j].b == 0) {
                         energy[i][j] = -500000;
                     }
                     else {
-                        int rx = (pic[2].img[i * (width) + j+1].r) - (pic[2].img[i * (width) + j-1].r);
-                        int gx = (pic[2].img[i * (width) + j+1].g) - (pic[2].img[i * (width) + j-1].g);
-                        int bx = (pic[2].img[i * (width) + j+1].b) - (pic[2].img[i * (width) + j-1].b);
+                        int rx = (pic[2].img[i * (width2) + j+1].r) - (pic[2].img[i * (width2) + j-1].r);
+                        int gx = (pic[2].img[i * (width2) + j+1].g) - (pic[2].img[i * (width2) + j-1].g);
+                        int bx = (pic[2].img[i * (width2) + j+1].b) - (pic[2].img[i * (width2) + j-1].b);
                         int deltaX = pow(rx, 2) + pow(gx, 2) + pow(bx, 2);
                         //printf("deltax: %d \n", deltaX);
-                        int ry = (pic[2].img[(i+1) * (width) + j].r) - (pic[2].img[(i-1) * (width) + j].r);
-                        int gy = (pic[2].img[(i+1) * (width) + j].g) - (pic[2].img[(i-1) * (width) + j].g);
-                        int by = (pic[2].img[(i+1) * (width) + j].b) - (pic[2].img[(i-1) * (width) + j].b);
+                        int ry = (pic[2].img[(i+1) * (width2) + j].r) - (pic[2].img[(i-1) * (width2) + j].r);
+                        int gy = (pic[2].img[(i+1) * (width2) + j].g) - (pic[2].img[(i-1) * (width2) + j].g);
+                        int by = (pic[2].img[(i+1) * (width2) + j].b) - (pic[2].img[(i-1) * (width2) + j].b);
                         int deltaY = pow(ry, 2) + pow(gy, 2) + pow(by, 2);
                     //printf("deltay: %d \n", deltaY);
                     energy[i][j] = deltaX + deltaY;
@@ -217,11 +214,12 @@ for(int i=0; i<pic[2].height*pic[2].width; i++) {
 //            }
 //        }
 
-    int matrizSoma[height][width];
-//    // matriz de somas
 
+//    // matriz de somas
+    //int auxCount = 0;
+    int matrizSoma[height][width2];
     for( int i = 0; i < height; i++ ) {
-        for( int j = 0; j < width; j++ ) {
+        for( int j = 0; j < width2; j++ ) {
             //matrizSoma[i][j] = energy[i][j];
             if (i == 0) {
                 matrizSoma[i][j] = energy[i][j];
@@ -238,10 +236,9 @@ for(int i=0; i<pic[2].height*pic[2].width; i++) {
                     else {
                         matrizSoma[i][j] = vlrAtual;
                     }
-
                 }
                 else {
-                    if (j == width-1) {
+                    if (j == width2-1) {
                         int aux = energy[i][j];
                         aux += matrizSoma[i-1][j];
                         if( (energy[i][j] + matrizSoma[i-1][j-1]) < aux ) {
@@ -266,11 +263,12 @@ for(int i=0; i<pic[2].height*pic[2].width; i++) {
                 }
 
             }
-
-
         }
     }
-
+//
+//    for( int i = 0; i<width; i++ ) {
+//        printf("i: %i - valor: %i\n", i, matrizSoma[height-1][i]);
+//    }
 //    imprime matriz de somas
 //    for( int i = 0; i < height; i++ ) {
 //        int i = height-1;
@@ -280,61 +278,81 @@ for(int i=0; i<pic[2].height*pic[2].width; i++) {
 //    }
 
     int positions[height];
-    int i = height-1;
-    int j = 0;
+    int contI = height-1;
+    int contJ = 0;
     int count = height-1;
 
     int menor = matrizSoma[height-1][0];
-    for(int n = 0; n < width; n++) {
+    for(int n = 0; n < width2; n++) {
+
         if( matrizSoma[height-1][n] < menor ) {
             menor = matrizSoma[height-1][n];
-            j = n;
+            contJ = n;
         }
     }
-    positions[i] = j;
+    positions[contI] = count;
     count--;
-    i--;
+    contI--;
     while( count >= 0 ) {
     //23 printf("count1: %i\n", i);
-        int a = matrizSoma[i-1][j-1];
-        int b = matrizSoma[i-1][j];
-        int c = matrizSoma[i-1][j+1];
+        int a = matrizSoma[contI-1][contJ-1];
+        int b = matrizSoma[contI-1][contJ];
+        int c = matrizSoma[contI-1][contJ+1];
         //printf("%s", "aqui");
         if(a <= b &&  a <= c) {
-            j = j-1;
-            positions[i] = j;
+            contJ = contJ-1;
+            positions[contI] = contJ;
             //printf("count1: %i\n", i);
             //printf("iA: %i\n", i);
         }
         else if(b <= a &&  b <= c) {
-            j = j;
-            positions[i] = j;
+            contJ = contJ;
+            positions[contI] = contJ;
             //printf("count2: %i\n", i);
             //printf("iB: %i\n", i);
         }
         else if(c <= a && c <= b) {
-            j = j+1;
-            positions[i] = j;
+            contJ = contJ+1;
+            positions[contI] = contJ;
             //printf("count3: %i\n", i);
             //printf("iC: %i\n", i);
         }
-        i = i-1;
+        contI = contI-1;
         count--;
     }
 
+    //int pic2Width = pic[2].width;
+    removeSeam(positions);
 //    for(int i = 0; i < height; i++) {
 //        printf("%i\n", positions[i]);
 //    }
+}
 
+void removeSeam(int* positions) {
+    int j;
     for(int i = 0; i < height; i++) {
-        for(int j = positions[i]; j < width; j++) {
+        for(j = positions[i]; j < width2; j++) {
+            //printf("width: %i\n",width);
             //printf("linha: %i   AQUI: %i\n",i, j);
-            //pic[2].img[i * (width) + j].r = pic[2].img[i * (width) + (j + 1)].r = 255;
-            pic[2].img[i * (width) + j] = pic[2].img[i * (width) + (j + 1)];
-            //pic[2].img[i * (width) + (width-1)-i].r = pic[2].img[i].r = 255;
+            //pic[2].img[i * (width) + positions[i]].r = pic[2].img[i * (width) + (positions[i] + 1)].r = 255;
+            //printf("I: %i J: %i Position: %i\n",i,j,positions[i]);
+            if(j == positions[i]) {
+                pic[2].img[i * (width) + j].r = 255;
+            }
+            //pic[2].img[i * (width) + j] = pic[2].img[i * (width) + (j + 1)];
         }
+        //pic[2].img[i * (width) + (width-1)].r = 0;
+        //pic[2].img[i * (width) + (width-1)].g = 0;
+        //pic[2].img[i * (width) + (width-1)].b = 0;
+        // pic[2].img[i * (width2) + (width2-1)].r = pic[2].img[i * (width2) + (j)].r = 0;
+        // pic[2].img[i * (width2) + (width2-1)].g = pic[2].img[i * (width2) + (j)].g = 0;
+        // pic[2].img[i * (width2) + (width2-1)].b = pic[2].img[i * (width2) + (j)].b = 0;
     }
-    //width--;
+    //}
+    //pic2Width = *pic2Width - 1;
+    //pic2Width = *pic2Width - 1;
+    //printf("width: %i\n", *pic2Width);
+    width2--;
 }
 
 // Gerencia eventos de teclado
@@ -354,9 +372,6 @@ void keyboard(unsigned char key, int x, int y)
         for(int i = 0; i < 200; i++) {
             pixEnergy();
         }
-
-
-
 
         // Exemplo: pintando tudo de amarelo
 //        for(int i=0; i<pic[2].height*pic[2].width; i++)
